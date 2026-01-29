@@ -24,6 +24,32 @@ COR_BOTAO = (70, 130, 180)
 COR_HOVER = (100, 160, 210)
 COR_TEXTO = (255, 255, 255)
 
+tamanho = 60
+
+labirinto =[
+   [1,1,1,1,1,1,1,1,1,1,1,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,1,1,1,1,1,1,1,1,1,1,1]
+]
 
 while running:
     for event in pygame.event.get():
@@ -60,12 +86,21 @@ while running:
     elif estado == "jogo":
        screen.fill((0, 150, 0))
        screen.blit(quadrado, (x, y))
+       for col_i, linha in enumerate(labirinto):
+         for linha_i, celula in enumerate(linha):
+           if celula == 1:
+             pygame.draw.rect(
+                 screen,
+                (0, 0, 0),
+                (col_i*tamanho, linha_i*tamanho, tamanho, tamanho)
+            )
+
     pygame.display.flip()
-    teclas = pygame.key.get_pressed() # Para capturar o pressionamento das teclas de forma contínua
+    teclas = pygame.key.get_pressed() 
     if estado == "jogo":
-       if teclas[pygame.K_LEFT]:   # tecla direcional esquerda está sendo pressionada?
+       if teclas[pygame.K_LEFT]:   
          x = x - velocidade
-       if teclas[pygame.K_RIGHT]:  # tecla direcional direita está sendo pressionada?
+       if teclas[pygame.K_RIGHT]:  
          x = x + velocidade
        if teclas[pygame.K_UP]:
          y = y - velocidade 
