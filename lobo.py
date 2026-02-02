@@ -8,10 +8,12 @@ estado="menu"
 
 quadrado = pygame.Surface([30, 30])
 quadrado.fill((30, 30, 30))
+rect_quadrado = quadrado.get_rect()
 
-x = 50      	
+x = 100
 velocidade =5   
 y = 100
+rect_quadrado.topleft = (x, y)
 
 background = pygame.image.load("start.png").convert()
 background = pygame.transform.scale(background, (1280, 720))
@@ -50,6 +52,17 @@ labirinto =[
    [1,0,0,0,0,0,0,0,1,0,0,1],
    [1,1,1,1,1,1,1,1,1,1,1,1]
 ]
+blocos = []        # representas as paredes
+rects_blocos = []  # rects dos blocos
+for  col_i, linha in enumerate(labirinto):
+  for linha_i, celula in enumerate(linha) :
+    if labirinto[col_i][linha_i] == 1:
+      bloco = pygame.Surface([tamanho, tamanho])
+      bloco.fill((30, 30, 30))
+      rect = bloco.get_rect()
+      rect.topleft = (col_i*tamanho, linha_i*tamanho,)
+      blocos.append(bloco)
+      rects_blocos.append(rect)
 
 while running:
     for event in pygame.event.get():
@@ -90,7 +103,13 @@ while running:
 
     elif estado == "jogo":
        screen.fill((0, 150, 0))
-       screen.blit(quadrado, (x, y))
+       #screen.blit(quadrado, (x, y))
+       screen.blit(quadrado, rect_quadrado.topleft)
+       for i, blc in enumerate(blocos):
+           screen.blit(blc, rects_blocos[i].topleft)
+           # desenhar bloco na tela
+           
+       '''
        for col_i, linha in enumerate(labirinto):
          for linha_i, celula in enumerate(linha):
            if celula == 1:
@@ -99,12 +118,22 @@ while running:
                 (0, 0, 0),
                 (col_i*tamanho, linha_i*tamanho, tamanho, tamanho)
             )
+        '''
+             
 
     pygame.display.flip()
     teclas = pygame.key.get_pressed() 
     if estado == "jogo":
        if teclas[pygame.K_LEFT]:   
-         x = x - velocidade
+         #x = x - velocidade
+         rect_quadrado.left = rect_quadrado.left - velocidade
+         for rec in rects_blocos:
+            if rect_quadrado.colliderect(rec):
+              print("COLIUSÃO")
+              x2=rec.right
+              x3=rect_quadrado.left
+              if x3 < x2:
+                rect_quadrado.left = rect_quadrado.left + (x2 - x3)
        if teclas[pygame.K_RIGHT]:  
          x = x + velocidade
        if teclas[pygame.K_UP]:
