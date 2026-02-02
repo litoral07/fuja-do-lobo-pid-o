@@ -135,11 +135,32 @@ while running:
               if x3 < x2:
                 rect_quadrado.left = rect_quadrado.left + (x2 - x3)
        if teclas[pygame.K_RIGHT]:  
-         x = x + velocidade
+         rect_quadrado.left = rect_quadrado.left + velocidade
+         for rec in rects_blocos:
+            if rect_quadrado.colliderect(rec):
+              print("COLIUSÃO")
+              x2=rec.left
+              x3=rect_quadrado.right
+              if x3 > x2:
+                rect_quadrado.right = rect_quadrado.right + (x2 - x3)
        if teclas[pygame.K_UP]:
-         y = y - velocidade 
+         rect_quadrado.top = rect_quadrado.top - velocidade
+         for rec in rects_blocos:
+            if rect_quadrado.colliderect(rec):
+              print("COLIUSÃO")
+              x2=rec.bottom
+              x3=rect_quadrado.top
+              if x3 < x2:
+                rect_quadrado.top = rect_quadrado.top + (x2 - x3) 
        if teclas[pygame.K_DOWN]:
-         y = y + velocidade 
+         rect_quadrado.top = rect_quadrado.top + velocidade
+         for rec in rects_blocos:
+            if rect_quadrado.colliderect(rec):
+              print("COLIUSÃO")
+              x2=rec.top
+              x3=rect_quadrado.bottom
+              if x3 > x2:
+                rect_quadrado.left = rect_quadrado.left - (x2 + x3)
        if x < 0:
          x = 0
        if x > 1280 - 30:
