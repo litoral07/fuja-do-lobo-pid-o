@@ -30,26 +30,26 @@ tamanho = 60
 
 labirinto =[
    [1,1,1,1,1,1,1,1,1,1,1,1],
-   [1,0,0,1,0,0,0,0,0,0,0,1],
-   [1,0,0,1,0,0,1,1,1,1,1,1],
-   [1,0,0,1,0,0,0,0,0,0,0,1],
-   [1,0,0,1,1,1,1,1,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,1,1,1,1,1,1,1,1,1,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,1,1,1,1,0,1,1,1,1,1,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,1,0,1,0,1,0,1,0,1,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,1,0,1,0,1,0,1,0,1,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,1,1,1,1,1,1,1,1,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,1,1,1,1,1,0,0,1],
-   [1,0,0,0,1,0,0,0,1,0,0,1],
-   [1,0,0,0,1,0,0,0,1,0,0,1],
-   [1,0,0,0,0,0,0,0,1,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,1,1,1,1,1,1,1,1,1,1,1]
 ]
 blocos = []        # representas as paredes
@@ -63,7 +63,8 @@ for  col_i, linha in enumerate(labirinto):
       rect.topleft = (col_i*tamanho, linha_i*tamanho,)
       blocos.append(bloco)
       rects_blocos.append(rect)
-
+pontos = 0
+inicio = pygame.time.get_ticks()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -109,16 +110,13 @@ while running:
            screen.blit(blc, rects_blocos[i].topleft)
            # desenhar bloco na tela
            
-       '''
-       for col_i, linha in enumerate(labirinto):
-         for linha_i, celula in enumerate(linha):
-           if celula == 1:
-             pygame.draw.rect(
-                 screen,
-                (0, 0, 0),
-                (col_i*tamanho, linha_i*tamanho, tamanho, tamanho)
-            )
-        '''
+       tempo_atual = pygame.time.get_ticks()
+       segundos = (tempo_atual - inicio) // 16
+
+       pontos = segundos
+       texto_pontos = fonte.render(f"Pontos: {pontos}", True, (255, 255, 255))
+       screen.blit(texto_pontos, (20, 20))
+
              
 
     pygame.display.flip()
@@ -129,7 +127,6 @@ while running:
          rect_quadrado.left = rect_quadrado.left - velocidade
          for rec in rects_blocos:
             if rect_quadrado.colliderect(rec):
-              print("COLIUSÃO")
               x2=rec.right
               x3=rect_quadrado.left
               if x3 < x2:
@@ -138,7 +135,6 @@ while running:
          rect_quadrado.left = rect_quadrado.left + velocidade
          for rec in rects_blocos:
             if rect_quadrado.colliderect(rec):
-              print("COLIUSÃO")
               x2=rec.left
               x3=rect_quadrado.right
               if x3 > x2:
@@ -147,7 +143,6 @@ while running:
          rect_quadrado.top = rect_quadrado.top - velocidade
          for rec in rects_blocos:
             if rect_quadrado.colliderect(rec):
-              print("COLIUSÃO")
               x2=rec.bottom
               x3=rect_quadrado.top
               if x3 < x2:
@@ -156,20 +151,11 @@ while running:
          rect_quadrado.top = rect_quadrado.top + velocidade
          for rec in rects_blocos:
             if rect_quadrado.colliderect(rec):
-              print("COLIUSÃO")
               x2=rec.top
               x3=rect_quadrado.bottom
               if x3 > x2:
-                rect_quadrado.left = rect_quadrado.left - (x2 + x3)
-       if x < 0:
-         x = 0
-       if x > 1280 - 30:
-         x = 1280 - 30
-
-       if y < 0:
-         y = 0
-       if y > 720 - 30:
-         y = 720 - 30       
+                rect_quadrado.bottom = rect_quadrado.bottom + (x2 - x3)
+           
      
     clock.tick(60)
 
