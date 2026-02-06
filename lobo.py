@@ -6,8 +6,9 @@ clock = pygame.time.Clock()
 running = True
 estado="menu"
 
-quadrado = pygame.Surface([30, 30])
-quadrado.fill((30, 30, 30))
+imagem_jogador = pygame.image.load("luan.png").convert_alpha()
+imagem_jogador = pygame.transform.scale(imagem_jogador, (50, 50))
+quadrado = imagem_jogador
 rect_quadrado = quadrado.get_rect()
 
 x = 100
@@ -15,11 +16,27 @@ velocidade =5
 y = 100
 rect_quadrado.topleft = (x, y)
 
+imagem_inimigo = pygame.image.load("lobol.png").convert_alpha()
+imagem_inimigo = pygame.transform.scale(imagem_inimigo, (50, 50))
+inimigo = imagem_inimigo
+rect_inimigo = inimigo.get_rect()
+rect_inimigo.topleft = (600, 600)
+
+vel_inimigo = 2
+lobo_direita = True
+
+
 background = pygame.image.load("start.png").convert()
 background = pygame.transform.scale(background, (1280, 720))
+background2 = pygame.image.load("lobo.webp").convert()
+background2 = pygame.transform.scale(background2, (1280, 720))
+background3 = pygame.image.load("grama.webp").convert()
+background3 = pygame.transform.scale(background3, (1280, 720))
 
 sair_rect  = pygame.Rect(520, 310, 240, 60)
 start_rect = pygame.Rect(520, 240, 240, 60)
+tente_rect = pygame.Rect(480, 360, 320, 60)
+
 fonte = pygame.font.SysFont(None, 60)
 
 COR_BOTAO = (150, 0, 0)
@@ -28,27 +45,30 @@ COR_TEXTO = (255, 255, 255)
 
 tamanho = 60
 
+imagem_bloco = pygame.image.load("arvore.png").convert_alpha()
+imagem_bloco = pygame.transform.scale(imagem_bloco, (tamanho, tamanho))
+
 labirinto =[
    [1,1,1,1,1,1,1,1,1,1,1,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
-   [1,0,0,0,0,0,0,0,0,0,0,1],
+   [1,0,0,1,0,0,1,0,0,1,0,1],
    [1,0,0,0,0,0,0,0,0,0,0,1],
    [1,1,1,1,1,1,1,1,1,1,1,1]
 ]
@@ -57,12 +77,12 @@ rects_blocos = []  # rects dos blocos
 for  col_i, linha in enumerate(labirinto):
   for linha_i, celula in enumerate(linha) :
     if labirinto[col_i][linha_i] == 1:
-      bloco = pygame.Surface([tamanho, tamanho])
-      bloco.fill((30, 30, 30))
+      bloco = imagem_bloco
       rect = bloco.get_rect()
-      rect.topleft = (col_i*tamanho, linha_i*tamanho,)
+      rect.topleft = (col_i * tamanho, linha_i * tamanho)
       blocos.append(bloco)
       rects_blocos.append(rect)
+
 pontos = 0
 inicio = pygame.time.get_ticks()
 while running:
@@ -76,6 +96,16 @@ while running:
                  estado="jogo"
                 if sair_rect.collidepoint(event.pos):
                  running = False
+        if estado == "derrota":
+          if event.type == pygame.MOUSEBUTTONDOWN:
+             if event.button == 1:
+               if tente_rect.collidepoint(event.pos):
+                 estado = "jogo"
+                 rect_quadrado.topleft = (60, 60)
+                 rect_inimigo.topleft = (600, 600)
+                 inicio = pygame.time.get_ticks()
+                 pontos = 0
+         
     if estado == "menu":
        screen.blit(background, (0, 0))
        mouse_pos = pygame.mouse.get_pos()
@@ -103,7 +133,7 @@ while running:
          screen.blit(texto_sair, texto_sair.get_rect(center=sair_rect.center))
 
     elif estado == "jogo":
-       screen.fill((0, 150, 0))
+       screen.blit(background3, (0, 0))
        #screen.blit(quadrado, (x, y))
        screen.blit(quadrado, rect_quadrado.topleft)
        for i, blc in enumerate(blocos):
@@ -111,14 +141,17 @@ while running:
            # desenhar bloco na tela
            
        tempo_atual = pygame.time.get_ticks()
-       segundos = (tempo_atual - inicio) // 16
+       segundos = (tempo_atual - inicio) // 100
+       vel_inimigo = 2 + (pontos // 100)
 
-       pontos = segundos
+       pontos = segundos  
        texto_pontos = fonte.render(f"Pontos: {pontos}", True, (255, 255, 255))
        screen.blit(texto_pontos, (20, 20))
-
-             
-
+       if pontos == 9999:
+          estado = "vitoria"
+       inimigo_desenho = pygame.transform.flip(inimigo, not lobo_direita, False)
+       screen.blit(inimigo_desenho, rect_inimigo.topleft)
+  
     pygame.display.flip()
     teclas = pygame.key.get_pressed() 
     if estado == "jogo":
@@ -155,6 +188,62 @@ while running:
               x3=rect_quadrado.bottom
               if x3 > x2:
                 rect_quadrado.bottom = rect_quadrado.bottom + (x2 - x3)
+
+      
+       if rect_inimigo.x < rect_quadrado.x:
+         rect_inimigo.x += vel_inimigo
+         lobo_direita = False
+       elif rect_inimigo.x > rect_quadrado.x:
+         rect_inimigo.x -= vel_inimigo
+         lobo_direita = True
+
+       for rec in rects_blocos:
+         if rect_inimigo.colliderect(rec):
+           if rect_inimigo.centerx < rec.centerx:
+             rect_inimigo.right = rec.left
+           else:
+             rect_inimigo.left = rec.right
+
+
+       if rect_inimigo.y < rect_quadrado.y:
+         rect_inimigo.y += vel_inimigo
+       elif rect_inimigo.y > rect_quadrado.y:
+         rect_inimigo.y -= vel_inimigo
+
+       for rec in rects_blocos:
+         if rect_inimigo.colliderect(rec):
+           if rect_inimigo.centery < rec.centery:
+             rect_inimigo.bottom = rec.top
+           else:
+             rect_inimigo.top = rec.bottom
+
+       if rect_quadrado.colliderect(rect_inimigo):
+         estado = "derrota"
+         rect_quadrado.topleft = (60, 60)
+         rect_inimigo.topleft = (600, 600)
+         inicio = pygame.time.get_ticks()
+
+
+        
+    if estado == "vitoria":
+       screen.blit(background2, (0, 0))
+       mouse_pos = pygame.mouse.get_pos()
+    elif estado == "derrota":
+       screen.fill((50, 0, 0))  
+
+
+       texto_derrota = fonte.render("VOCÊ É BETA!", True, (255, 255, 255))
+       screen.blit(texto_derrota, texto_derrota.get_rect(center=(640, 200)))
+
+       mouse_pos = pygame.mouse.get_pos()
+       if tente_rect.collidepoint(mouse_pos):
+         pygame.draw.rect(screen, COR_HOVER, tente_rect, border_radius=12)
+       else:
+         pygame.draw.rect(screen, COR_BOTAO, tente_rect, border_radius=12)
+
+       texto_tente = fonte.render("tente novamente", True, COR_TEXTO)
+       screen.blit(texto_tente, texto_tente.get_rect(center=tente_rect.center))
+               
            
      
     clock.tick(60)
